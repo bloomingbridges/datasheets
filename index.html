@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>DataSheets</title>
+        <meta name="description" content="A minimal, single file web app for creating beautiful data sheets" />
+        <style>
+            @font-face {
+                font-family: 'iA Writer Mono';
+                font-style: normal;
+                font-display: swap;
+                font-weight: 400;
+                src: url(https://cdn.jsdelivr.net/fontsource/fonts/ia-writer-mono@latest/latin-400-normal.woff2) format('woff2'), url(https://cdn.jsdelivr.net/fontsource/fonts/ia-writer-mono@latest/latin-400-normal.woff) format('woff');
+            }
+            @font-face {
+                font-family: 'iA Writer Mono';
+                font-style: normal;
+                font-display: swap;
+                font-weight: 700;
+                src: url(https://cdn.jsdelivr.net/fontsource/fonts/ia-writer-mono@latest/latin-700-normal.woff2) format('woff2'), url(https://cdn.jsdelivr.net/fontsource/fonts/ia-writer-mono@latest/latin-700-normal.woff) format('woff');
+            }
+            :root {
+                --paper: white;
+                --hover: rgb(245, 247, 249);
+                --faint: lightgrey;
+                --text: rgb(53, 53, 53);
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html {
+                background: var(--paper);
+            }
+            body {
+                color: var(--text);
+                font-family: "iA Writer Mono", -apple-system, sans-serif;
+                font-size: 0.8rem;
+                margin: 0;
+                padding: 0;
+            }
+            h1,
+            h2,
+            h3 {
+                font-family: 'iA Writer Mono';
+                font-weight: 500;
+                margin: 1rem 0;
+            }
+            button {
+                font-family: "iA Writer Mono", -apple-system, sans-serif;
+                cursor: pointer;
+            }
+            button:disabled {
+                color: var(--faint);
+            }
+            header {
+                text-align: left;
+                padding: 0.5rem 2rem 2rem;
+                display: flex;
+                flex-direction: column-reverse;
+                justify-content: space-between;
+                align-items: start;
+                transition: background-color 0.2s ease-in-out;
+                gap: 1rem;
+            }
+            header:hover,
+            table tr:hover {
+                background-color: var(--hover);
+            }
+            #meta {
+                flex-grow: 2;
+                max-width: 66.6%;
+            }
+            nav {
+                display: flex;
+                flex-grow: 2;
+                width: 100%;
+                justify-content: space-evenly;
+                gap: 0;
+            }
+            nav button {
+                color: var(--text);
+                font-size: 1rem;
+                border: none;
+                border-radius: 9rem;
+                background-color: var(--paper);
+                display: inline-flex;
+                width: 4rem;
+                height: 4rem;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                visibility: visible;
+            }
+            nav button:not([disabled]):hover {
+                background-color: var(--hover);
+            }
+            nav button.unavailable {
+                visibility: hidden;
+            }
+            main {
+                position: relative;
+                top: -1rem;
+                left: 0;
+            }
+            table {
+                width: 100%;
+                table-layout: fixed;
+                background-color: var(--paper);
+                border-radius: 1rem;
+                pointer-events: none;
+                overflow: auto;
+            }
+            table thead th:nth-child(3) {
+                color: transparent;
+                user-select: none;
+            }
+            table thead tr:hover th:nth-child(3) {
+                color: rgb(53, 53, 53);
+            }
+            table tr,
+            table td {
+                pointer-events: all;
+            }
+            table th,
+            table td {
+                padding: 0.5rem 2rem;
+                text-align: left;
+                width: auto;
+            }
+            table tr.hidden {
+                color: var(--faint);
+            }
+            table tr.divider {
+                font-weight: bold;
+                background-color: var(--hover);
+            }
+            .actions {
+                color: var(--faint);
+                display: flex;
+                opacity: 0;
+                justify-content: space-evenly;
+                align-items: center;
+                vertical-align: middle;
+                gap: 0.4rem;
+            }
+            .actions button {
+                color: var(--text);
+                border: none;
+                font-weight: bold;
+                padding: 0.4rem 0.8rem;
+                border-radius: 1rem;
+                display: inline-block;
+                background-color: var(--paper);
+                cursor: pointer;
+            }
+            .actions button:hover {
+                background-color: var(--hover);
+            }
+            table tr.eof:hover .actions,
+            table tr:hover .actions,
+            td.actions:hover {
+                opacity: 1;
+            }
+            table tr.eof {
+                background: transparent url(./grip_light.svg) repeat left top;
+            }
+            ::backdrop {
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+            dialog {
+                text-align: left;
+                color: var(--text);
+                background-color: var(--paper);
+                border: none;
+                border-radius: 0.5rem;
+                padding: 0.5rem 2rem 2rem;
+            }
+            dialog ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            dialog ul li {
+                padding: 0.5rem 2rem;
+                cursor: pointer;
+            }
+            dialog ul li:hover {
+                background-color: var(--hover);
+            }
+            @media screen and (min-width: 960px) {
+                body {
+                    font-size: 1rem;
+                }
+                header {
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 2rem;
+                }
+                nav {
+                    flex-grow: 0;
+                    width: auto;
+                    justify-content: flex-end;
+                    gap: 2rem;
+                }
+                table tr th:first-of-type,
+                table tr td:first-of-type {
+                    width: 33vw;
+                }
+            }
+            @media print {
+                table thead th:nth-child(3),
+                table tbody td:nth-child(3),
+                table tbody td.actions {
+                    width: 0;
+                    display: none;
+                }
+                header,
+                header:hover {
+                    background: var(--paper);
+                }
+                header nav,
+                tr.hidden,
+                tr.eof {
+                    display: none;
+                }
+            }
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --paper: black;
+                    --hover: rgb(17, 17, 17);
+                    --faint: rgb(50, 50, 50);
+                    --text: rgb(187, 187, 187);
+                }
+                table tr.eof {
+                    background-image: url(./grip_dark.svg);
+                }
+            }
+            @media (pointer:coarse) {
+                html {
+                    background-color: var(--hover);
+                }
+                tr td.actions {
+                    opacity: 1 !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <section id="meta">
+                <h1 contenteditable="plaintext-only">Titel</h1>
+                <h2 contenteditable="plaintext-only" onblur="checkForSavingOpportunity()">Projekt-Nr</h2>
+            </section>
+            <nav>
+                <button id="new-btn" class="unavailable" onclick="empty()" title="Neues Sheet anlegen">NEU</button>
+                <button id="open-btn" onclick="showSavedDocuments()" title="Sheet öffnen" disabled>ÖFFN</button>
+                <button id="save-btn" onclick="save()" title="Sheet abspeichern" disabled>SPEI</button>
+                <button id="prnt-btn" onclick="print()" title="Sheet ausdrucken">DRCK</button>
+            </nav>
+        </header>
+        <main>
+            <table>
+                <thead>
+                    <tr>
+                        <th contenteditable="plaintext-only">Einträge</th>
+                        <th contenteditable="plaintext-only">Werte</th>
+                        <th>Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="eof">
+                        <td colspan="2"></td>
+                        <td class="actions">
+                            <button title="Add Row" onclick="add(ROW_TYPE.Row)">+ Zeile</button>
+                            <button title="Add Divider" onclick="add(ROW_TYPE.Div)">+ Seperator</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+
+        <dialog id="open-dialog" popover>
+            <h3>Gespeicherte Sheets</h3>
+            <ul></ul>
+        </dialog>
+
+        <script>
+
+            const ROW_TYPE = {
+                Row: 0,
+                Div: 1
+            };
+
+            const ROW_TEMPLATE = `
+                <td contenteditable="plaintext-only"></td>
+                <td contenteditable="plaintext-only"></td>
+                <td class="actions">
+                    <button title="Remove" onclick="remove(event)">Entfernen</button>
+                    <button title="Toggle Visibility" onclick="toggleVisibility(event)">Sichtbarkeit</button>
+                </td>
+            `;
+
+            const DIV_TEMPLATE = `
+                <td colspan="2" contenteditable="plaintext-only">Label</td>
+                <td class="actions">
+                    <button title="Remove" onclick="remove(event)">Entfernen</button>
+                </td>
+            `;
+
+            const NEW_BTN = document.getElementById('new-btn');
+            const OPEN_BTN = document.getElementById("open-btn");
+            const OPEN_DIALOG = document.getElementById("open-dialog");
+            const SAVE_BTN = document.getElementById("save-btn");
+
+            const TITLE = document.querySelector("#meta h1");
+            const PID = document.querySelector("#meta h2");
+            const EOF = document.querySelector("table tr.eof");
+            const TBODY = document.querySelector("table tbody");
+            const HEADERS = document.querySelectorAll("thead th");
+
+            (() => {
+                checkForSavedDocuments();
+            })()
+
+            // DOCUMENTS ///////////////////////////////////////
+            function checkForSavedDocuments() {
+                const KEYS = Object.keys(localStorage);
+                if (KEYS.length > 0) {
+                    const LIST = [];
+                    for (let key of KEYS) {
+                        const DOC = JSON.parse(localStorage.getItem(key));
+                        LIST.push(`<li onclick="load('${key}')">${DOC.meta.title}</li>`);
+                    }
+                    document.querySelector("#open-dialog ul").innerHTML = LIST.join("\n");
+                    document.getElementById('open-btn').removeAttribute('disabled');
+                }
+            }
+
+            function checkForSavingOpportunity() {
+                if (TITLE.innerText !== "Titel" && PID.innerText !== "Projekt-Nr") {
+                    SAVE_BTN.removeAttribute('disabled');
+                } else {
+                    SAVE_BTN.setAttribute('disabled', 'disabled');
+                }
+            }
+
+            function clearSheet() {
+                const ROWS = document.querySelectorAll("tbody tr:not(.eof)");
+                ROWS.forEach(( row ) => row.remove());
+            }
+
+            // EVENTS //////////////////////////////////////////
+            function showSavedDocuments() {
+                OPEN_DIALOG.showPopover();
+            }
+
+            function empty() {
+                TITLE.innerText = "Titel";
+                PID.innerText = "Projekt-Nr";
+                HEADERS[0].innerText = "Einträge";
+                HEADERS[1].innerText = "Werte";
+                clearSheet();
+                NEW_BTN.classList.add('unavailable');
+            }
+
+            function load( id ) {
+                clearSheet();
+                const DOC = JSON.parse(localStorage.getItem(id));
+                TITLE.innerText = DOC.meta.title;
+                PID.innerText = DOC.meta.pid;
+                HEADERS[0].innerText = DOC.meta.column_headers[0];
+                HEADERS[1].innerText = DOC.meta.column_headers[1];
+                for (let row of DOC.sheet) {
+                    const TR = add( row.divider ? ROW_TYPE.Div : ROW_TYPE.Row);
+                    TR.children[0].innerText = row.data[0];
+                    if (!row.divider) {
+                        TR.children[1].innerText = row.data[1];
+                        if (row.hidden) {
+                            TR.classList.add('hidden');
+                        }
+                    }
+                }
+                OPEN_DIALOG.hidePopover();
+                NEW_BTN.classList.remove('unavailable');
+                checkForSavingOpportunity();
+            }
+
+            function save() {
+                const ID = PID.innerText;
+                const DOC = {
+                    meta: {
+                        column_headers: [
+                            HEADERS[0].innerText,
+                            HEADERS[1].innerText
+                        ],
+                        created: new Date().toISOString(),
+                        pid: PID.innerText,
+                        title: TITLE.innerText
+                    },
+                    sheet: []
+                };
+                for (let row of TBODY.children) {
+                    if (row.classList.contains('eof')) continue;
+                    const ENTRY = {
+                        data: [],
+                        divider: row.classList.contains('divider'),
+                        hidden: row.classList.contains('hidden')
+                    };
+                    const DATA = Array.from(row.querySelectorAll("td:not(.actions)"));
+                    ENTRY.data = DATA.map(( td ) => td.innerText);
+                    DOC.sheet.push(ENTRY);
+                }
+                localStorage.setItem(ID, JSON.stringify(DOC));
+                NEW_BTN.classList.remove('unavailable');
+                checkForSavedDocuments();
+            }
+
+            function add( type = ROW_TYPE.Row ) {
+                const TR = document.createElement('tr');
+                switch (type) {
+                    case ROW_TYPE.Div: 
+                        TR.classList.add('divider');
+                        TR.innerHTML = DIV_TEMPLATE;
+                        break;
+                    default:
+                    TR.innerHTML = ROW_TEMPLATE;
+
+                }
+                TBODY.insertBefore(TR, EOF);
+                return TR;
+            }
+
+            function toggleVisibility( event ) {
+                const TR = event.target.parentNode.parentNode;
+                TR.classList.toggle('hidden');
+            }
+
+            function remove( event ) {
+                const TR = event.target.parentNode.parentNode;
+                TR.remove();
+            }
+        </script>
+    </body>
+</html>
