@@ -4,7 +4,9 @@ A minimal, single purpose, single page web app for creating _beautiful_ data she
 
 No tracking, no login, just _FOSS_
 
-Created as a finger exercise to impress a potential client. As such, I consider it feature complete. __Pull requests welcome.__
+Created as a finger exercise to impress a potential client. As such, I consider it feature complete. 
+
+__Pull requests welcome!__
 
 ## Tips & Tricks
 
