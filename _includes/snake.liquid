@@ -25,6 +25,8 @@
                 --paper: white;
                 --hover: rgb(245, 247, 249);
                 --faint: lightgrey;
+                --fainter: #F5F7F9;
+                --faintest: #E2E4E6;
                 --text: rgb(53, 53, 53);
             }
             * {
@@ -53,6 +55,17 @@
             }
             button:disabled {
                 color: var(--faint);
+            }
+            a,
+            a:active,
+            a:visited {
+                color: inherit;
+                text-decoration: none;
+                font-weight: 700;
+            }
+            a:hover,
+            a:focus {
+                color: var(--text);
             }
             header {
                 text-align: left;
@@ -124,6 +137,9 @@
             table td {
                 pointer-events: all;
             }
+            table th {
+                font-weight: 700;
+            }
             table th,
             table td {
                 padding: 0.5rem 2rem;
@@ -190,6 +206,19 @@
             dialog ul li:hover {
                 background-color: var(--hover);
             }
+            footer {
+                color: var(--faintest);
+                text-align: center;
+                padding: 0.5rem 2rem;
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                transition: color 1s ease;
+            }
+            footer:hover {
+                color: var(--fainter);
+            }
             @media screen and (min-width: 960px) {
                 body {
                     font-size: 1rem;
@@ -223,7 +252,8 @@
                 }
                 header nav,
                 tr.hidden,
-                tr.eof {
+                tr.eof,
+                footer {
                     display: none;
                 }
             }
@@ -232,6 +262,8 @@
                     --paper: black;
                     --hover: rgb(17, 17, 17);
                     --faint: rgb(50, 50, 50);
+                    --fainter: #262626;
+                    --faintest: #111111;
                     --text: rgb(187, 187, 187);
                 }
                 table tr.eof {
@@ -244,6 +276,9 @@
                 }
                 tr td.actions {
                     opacity: 1 !important;
+                }
+                footer {
+                    color: var(--fainter)
                 }
             }
         </style>
@@ -280,6 +315,11 @@
                     </tr>
                 </tbody>
             </table>
+            <footer>
+                {{ footer.by }} <a href="https://bloomingbridges.xyz" title="Go to bloomingbridges.xyz" target="_blank">bloomingbridges</a> 
+                {% for locale in footer.locales %} &mdash; <a href="{{ locale.url }}" title="{{ locale.label }}">{{ locale.label }}</a> {% endfor %}
+                &mdash; <a href="https://github.com/bloomingbridges/datasheets" title="{{ footer.source }}" target="_blank">{{ footer.source }}</a>
+            </footer>
         </main>
 
         <dialog id="open-dialog" popover>

@@ -1,6 +1,6 @@
 {
-  "name": "datasheets",
-  "version": "1.0.0",
+  "name": "datastranding",
+  "version": "1.0.1",
   "description": "## A minimal, single file web app for creating beautiful data sheets",
   "scripts": {
     "dev": "npx @11ty/eleventy --serve",
@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "bloomingbridges",
-  "license": "MIT",
+  "license": "WTFPL",
   "dependencies": {
     "@11ty/eleventy": "^3.0.0"
   }
