@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="{{ lang }}">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>DataSheets</title>
-        <meta name="description" content="A minimal, single file web app for creating beautiful data sheets" />
+        <title>{{ title }}</title>
+        <meta name="description" content="{{ description }}" />
+        {{ content }}
         <style>
             @font-face {
                 font-family: 'iA Writer Mono';
@@ -34,7 +35,7 @@
             }
             body {
                 color: var(--text);
-                font-family: "iA Writer Mono", -apple-system, sans-serif;
+                font-family: "{{ font }}", -apple-system, sans-serif;
                 font-size: 0.8rem;
                 margin: 0;
                 padding: 0;
@@ -42,12 +43,12 @@
             h1,
             h2,
             h3 {
-                font-family: 'iA Writer Mono';
-                font-weight: 500;
+                font-family: {{ font }};
+                font-weight: 400;
                 margin: 1rem 0;
             }
             button {
-                font-family: "iA Writer Mono", -apple-system, sans-serif;
+                font-family: {{ font }}, -apple-system, sans-serif;
                 cursor: pointer;
             }
             button:disabled {
@@ -91,6 +92,7 @@
                 justify-content: center;
                 align-items: center;
                 visibility: visible;
+                text-transform: uppercase;
             }
             nav button:not([disabled]):hover {
                 background-color: var(--hover);
@@ -147,7 +149,7 @@
             .actions button {
                 color: var(--text);
                 border: none;
-                font-weight: bold;
+                font-weight: 700;
                 padding: 0.4rem 0.8rem;
                 border-radius: 1rem;
                 display: inline-block;
@@ -163,7 +165,7 @@
                 opacity: 1;
             }
             table tr.eof {
-                background: transparent url(./grip_light.svg) repeat left top;
+                background: transparent url(/grip_light.svg) repeat left top;
             }
             ::backdrop {
                 background-color: rgba(0, 0, 0, 0.5);
@@ -233,7 +235,7 @@
                     --text: rgb(187, 187, 187);
                 }
                 table tr.eof {
-                    background-image: url(./grip_dark.svg);
+                    background-image: url(/grip_dark.svg);
                 }
             }
             @media (pointer:coarse) {
@@ -249,31 +251,31 @@
     <body>
         <header>
             <section id="meta">
-                <h1 contenteditable="plaintext-only">Titel</h1>
-                <h2 contenteditable="plaintext-only" onblur="checkForSavingOpportunity()">Projekt-Nr</h2>
+                <h1 contenteditable="plaintext-only">{{ defaults.title }}</h1>
+                <h2 contenteditable="plaintext-only" onblur="checkForSavingOpportunity()">{{ defaults.meta }}</h2>
             </section>
             <nav>
-                <button id="new-btn" class="unavailable" onclick="empty()" title="Neues Sheet anlegen">NEU</button>
-                <button id="open-btn" onclick="showSavedDocuments()" title="Sheet öffnen" disabled>ÖFFN</button>
-                <button id="save-btn" onclick="save()" title="Sheet abspeichern" disabled>SPEI</button>
-                <button id="prnt-btn" onclick="print()" title="Sheet ausdrucken">DRCK</button>
+                <button id="new-btn" class="unavailable" onclick="empty()" title="{{ nav.new.title }}">{{ nav.new.label }}</button>
+                <button id="open-btn" onclick="showSavedDocuments()" title="{{ nav.open.title }}" disabled>{{ nav.open.label }}</button>
+                <button id="save-btn" onclick="save()" title="{{ nav.save.title }}" disabled>{{ nav.save.label }}</button>
+                <button id="prnt-btn" onclick="print()" title="{{ nav.prnt.title }}">{{ nav.prnt.label }}</button>
             </nav>
         </header>
         <main>
             <table>
                 <thead>
                     <tr>
-                        <th contenteditable="plaintext-only">Einträge</th>
-                        <th contenteditable="plaintext-only">Werte</th>
-                        <th>Aktionen</th>
+                        <th contenteditable="plaintext-only">{{ defaults.entries }}</th>
+                        <th contenteditable="plaintext-only">{{ defaults.values }}</th>
+                        <th>{{ defaults.actions }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="eof">
                         <td colspan="2"></td>
                         <td class="actions">
-                            <button title="Add Row" onclick="add(ROW_TYPE.Row)">+ Zeile</button>
-                            <button title="Add Divider" onclick="add(ROW_TYPE.Div)">+ Seperator</button>
+                            <button title="{{ actions.add_row.title }}" onclick="add(ROW_TYPE.Row)">{{ actions.add_row.label }}</button>
+                            <button title="{{ actions.add_divider.title }}" onclick="add(ROW_TYPE.Div)">{{ actions.add_divider.label }}</button>
                         </td>
                     </tr>
                 </tbody>
@@ -281,7 +283,7 @@
         </main>
 
         <dialog id="open-dialog" popover>
-            <h3>Gespeicherte Sheets</h3>
+            <h3>{{ dialog }}</h3>
             <ul></ul>
         </dialog>
 
@@ -296,15 +298,15 @@
                 <td contenteditable="plaintext-only"></td>
                 <td contenteditable="plaintext-only"></td>
                 <td class="actions">
-                    <button title="Remove" onclick="remove(event)">Entfernen</button>
-                    <button title="Toggle Visibility" onclick="toggleVisibility(event)">Sichtbarkeit</button>
+                    <button title="{{ actions.remove.title }}" onclick="remove(event)">{{ actions.remove.label }}</button>
+                    <button title="{{ actions.toggle.title }}" onclick="toggleVisibility(event)">{{ actions.toggle.label }}</button>
                 </td>
             `;
 
             const DIV_TEMPLATE = `
-                <td colspan="2" contenteditable="plaintext-only">Label</td>
+                <td colspan="2" contenteditable="plaintext-only">{{ defaults.label }}</td>
                 <td class="actions">
-                    <button title="Remove" onclick="remove(event)">Entfernen</button>
+                    <button title="{{ actions.remove.title }}" onclick="remove(event)">{{ actions.remove.label }}</button>
                 </td>
             `;
 
@@ -338,7 +340,7 @@
             }
 
             function checkForSavingOpportunity() {
-                if (TITLE.innerText !== "Titel" && PID.innerText !== "Projekt-Nr") {
+                if (TITLE.innerText !== "{{ defaults.title }}" && PID.innerText !== "{{ defaults.meta }}") {
                     SAVE_BTN.removeAttribute('disabled');
                 } else {
                     SAVE_BTN.setAttribute('disabled', 'disabled');
@@ -356,10 +358,10 @@
             }
 
             function empty() {
-                TITLE.innerText = "Titel";
-                PID.innerText = "Projekt-Nr";
-                HEADERS[0].innerText = "Einträge";
-                HEADERS[1].innerText = "Werte";
+                TITLE.innerText = "{{ defaults.title }}";
+                PID.innerText = "{{ defaults.meta }}";
+                HEADERS[0].innerText = "{{ defaults.entries }}";
+                HEADERS[1].innerText = "{{ defaults.values }}";
                 clearSheet();
                 NEW_BTN.classList.add('unavailable');
             }

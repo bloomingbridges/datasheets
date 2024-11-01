@@ -1,0 +1,15 @@
+{
+  "name": "datasheets",
+  "version": "1.0.0",
+  "description": "## A minimal, single file web app for creating beautiful data sheets",
+  "scripts": {
+    "dev": "npx @11ty/eleventy --serve",
+    "build": "npx @11ty/eleventy"
+  },
+  "keywords": [],
+  "author": "bloomingbridges",
+  "license": "MIT",
+  "dependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  }
+}
