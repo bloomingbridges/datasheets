@@ -1,0 +1,61 @@
+---
+layout: snake.liquid
+lang: zh_Hans
+title: Data Stranding
+description: 轻松创建表单的网页版APP
+font: 'Noto Sans SC Variable", "iA Writer Mono'
+dialog: 以往表格
+nav:
+  new:
+    label: 新建
+    title: 新建表格
+  open:
+    label: 打开
+    title: 打开以往表格
+  save:
+    label: 保存
+    title: 保存当前表格
+  prnt:
+    label: 打印
+    title: 打印当前表格
+defaults:
+  title: 标题
+  meta: 副标题
+  entries: 名称
+  values: 数额
+  actions: 操作
+  label: 新建组
+actions:
+  add_row:
+    label: + 单行
+    title: 新建单行
+  add_divider:
+    label: + 组
+    title: 新建组
+  remove:
+    label: 删除
+    title: 删除单行/整组
+  toggle:
+    label: 可见/不可见
+    title: 选择可见/不可见
+footer:
+  by: 作者
+  locales:
+    - url: /
+      label: English
+    - url: /de
+      label: Deutsch
+    - url: /jp
+      label: 日本語
+  source: GitHub
+---
+
+<style>
+    @font-face {
+        font-family: 'Noto Sans SC Variable';
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 900;
+        src: url(https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-sc:vf@latest/chinese-simplified-wght-normal.woff2) format('woff2-variations');
+    }
+</style>

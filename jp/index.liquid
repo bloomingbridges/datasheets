@@ -1,43 +1,43 @@
 ---
 layout: snake.liquid
-lang: jp
+lang: ja
 title: データ・ストランディング
 description: A minimal, single file web app for creating beautiful data sheets
 font: 'Noto Sans JP", "iA Writer Mono'
 dialog: 保村した書類
 nav:
   new:
-    label: 作る
-    title: New sheet
+    label: 新
+    title: 新しいシートを作る
   open:
     label: 回復
-    title: Load sheet
+    title: 保存したシートをロードする
   save:
-    label: 保村
-    title: Save sheet
+    label: 保存
+    title: シートを保存する
   prnt:
     label: 印刷
-    title: Print sheet
+    title: シートを印刷する
 defaults:
   title: 名
   meta: 叙述
   entries: アイテム
-  values: データ
-  actions: アクション
+  values: 価値
+  actions: オプション
   label: 付票
 actions:
   add_row:
     label: + 列
-    title: Add new row
+    title: 列を加える
   add_divider:
     label: + 項目
-    title: Add new divider
+    title: 項目列を加える
   remove:
     label: 消す
-    title: Remove
+    title: 列を消す
   toggle:
     label: ON/OFF
-    title: Toggle Visibility
+    title: ON/OFF
 footer:
   by: 作者
   locales:
@@ -45,6 +45,8 @@ footer:
       label: English
     - url: /de
       label: Deutsch
+    - url: /cn
+      label: 中文
   source: ソースはGitHubへ
 ---
 

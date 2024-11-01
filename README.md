@@ -13,3 +13,5 @@ __Pull requests welcome!__
 * You should be able to just save the page to your computer to use it locally. All data is stored on your browser via _localStorage_.
 
 * When exporting, make sure to select "Print backgrounds" in the print dialog for dividers to show up. 
+
+* While the app might be usable on mobile devices, it was not designed to.
